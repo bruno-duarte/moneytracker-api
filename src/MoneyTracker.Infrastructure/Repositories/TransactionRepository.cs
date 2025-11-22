@@ -1,5 +1,6 @@
 using MoneyTracker.Domain.Entities;
 using MoneyTracker.Domain.Interfaces;
+using MoneyTracker.Domain.Queries;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,27 @@ namespace MoneyTracker.Infrastructure.Repositories
 
         public async Task<Transaction?> GetByIdAsync(Guid id) => await _db.Transactions.FindAsync(id);
 
-        public async Task<IEnumerable<Transaction>> ListAsync() => await _db.Transactions.ToListAsync();
+        public async Task<IEnumerable<Transaction>> ListAsync(TransactionQuery query)
+        {
+            var q = _db.Transactions.AsQueryable();
+
+            if (query.Type.HasValue)
+                q = q.Where(t => t.Type == query.Type.Value);
+
+            if (!string.IsNullOrEmpty(query.CategoryId))
+                q = q.Where(t => t.CategoryId == query.CategoryId);
+
+            if (query.From.HasValue)
+                q = q.Where(t => t.Date >= query.From.Value);
+
+            if (query.To.HasValue)
+                q = q.Where(t => t.Date <= query.To.Value);
+
+            return await q
+                .Skip((query.Page - 1) * query.PageSize)
+                .Take(query.PageSize)
+                .ToListAsync();
+        }
 
         public async Task<IEnumerable<Transaction>> ListByMonthAsync(int year, int month)
         {

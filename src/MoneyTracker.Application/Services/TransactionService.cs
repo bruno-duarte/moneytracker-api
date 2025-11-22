@@ -6,6 +6,8 @@ using MoneyTracker.Domain.Enums;
 using MoneyTracker.Domain.Interfaces;
 using MoneyTracker.Infrastructure.Kafka;
 using MoneyTracker.Application.Services.Interfaces;
+using MoneyTracker.Application.DTOs;
+using MoneyTracker.Application.Mappers;
 
 namespace MoneyTracker.Application.Services
 {
@@ -27,7 +29,11 @@ namespace MoneyTracker.Application.Services
 
         public async Task<Transaction?> GetByIdAsync(Guid id) => await _repo.GetByIdAsync(id);
 
-        public async Task<IEnumerable<Transaction>> ListAsync() => await _repo.ListAsync();
+        public async Task<IEnumerable<Transaction>> ListAsync(TransactionQueryDto dto)
+        {
+            var query = dto.ToQuery();
+            return await _repo.ListAsync(query);
+        }
 
         public async Task<IEnumerable<Transaction>> ListByMonthAsync(int year, int month) => await _repo.ListByMonthAsync(year, month);
 

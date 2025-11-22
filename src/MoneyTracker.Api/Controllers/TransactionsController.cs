@@ -22,8 +22,17 @@ namespace MoneyTracker.Api.Controllers
             return CreatedAtAction(nameof(GetById), new { id = t.Id }, t);
         }
 
+        /// <summary>
+        /// Return list of transactions with optional filters.
+        /// Example:
+        /// GET /api/transactions?type=Expense&categoryId=food&from=2024-01-01&to=2024-02-01
+        /// </summary>
         [HttpGet]
-        public async Task<IActionResult> List() => Ok(await _svc.ListAsync());
+        public async Task<IActionResult> List([FromQuery] TransactionQueryDto query)
+        {
+            var list = await _svc.ListAsync(query);
+            return Ok(list);
+        }
 
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id)
