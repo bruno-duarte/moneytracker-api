@@ -19,7 +19,7 @@ namespace MoneyTracker.Api.Controllers
             var income = txs.Where(t => t.Type == Domain.Enums.TransactionType.Income).Sum(t => t.Amount);
             var expenses = txs.Where(t => t.Type == Domain.Enums.TransactionType.Expense).Sum(t => t.Amount);
 
-            var categoryTotals = txs.GroupBy(t => t.Category)
+            var categoryTotals = txs.GroupBy(t => t.CategoryId)
                 .ToDictionary(g => g.Key, g => g.Sum(x => x.Amount));
 
             return Ok(new {

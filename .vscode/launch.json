@@ -1,0 +1,36 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run EventsService",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/src/MoneyTracker.EventsService/bin/Debug/net8.0/MoneyTracker.EventsService.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/MoneyTracker.EventsService",
+      "stopAtEntry": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": ".NET Launch Web",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/src/MoneyTracker.Api/bin/Debug/net8.0/MoneyTracker.Api.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/MoneyTracker.Api",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Views"
+      }
+    }
+  ]
+}

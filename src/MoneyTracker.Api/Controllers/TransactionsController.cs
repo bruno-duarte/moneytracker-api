@@ -18,7 +18,7 @@ namespace MoneyTracker.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] TransactionCreateDto dto)
         {
-            var t = await _svc.CreateAsync(dto.Amount, dto.Type, dto.Category, dto.Date, dto.Description);
+            var t = await _svc.CreateAsync(dto.Amount, dto.Type, dto.CategoryId, dto.Date, dto.Description);
             return CreatedAtAction(nameof(GetById), new { id = t.Id }, t);
         }
 
@@ -38,7 +38,7 @@ namespace MoneyTracker.Api.Controllers
         {
             try
             {
-                await _svc.UpdateAsync(id, dto.Amount, dto.Type, dto.Category, dto.Date, dto.Description);
+                await _svc.UpdateAsync(id, dto.Amount, dto.Type, dto.CategoryId, dto.Date, dto.Description);
                 return NoContent();
             }
             catch (Exception)
@@ -54,6 +54,4 @@ namespace MoneyTracker.Api.Controllers
             return NoContent();
         }
     }
-
-    public record TransactionCreateDto(decimal Amount, TransactionType Type, string Category, DateTime Date, string? Description);
 }

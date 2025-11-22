@@ -9,20 +9,14 @@ using MoneyTracker.Application.Services.Interfaces;
 
 namespace MoneyTracker.Application.Services
 {
-    public class TransactionService : ITransactionService
+    public class TransactionService(ITransactionRepository repo, ProducerWrapper producer) : ITransactionService
     {
-        private readonly ITransactionRepository _repo;
-        private readonly ProducerWrapper _producer;
+        private readonly ITransactionRepository _repo = repo;
+        private readonly ProducerWrapper _producer = producer;
 
-        public TransactionService(ITransactionRepository repo, ProducerWrapper producer)
+        public async Task<Transaction> CreateAsync(decimal amount, TransactionType type, string categoryId, DateTime date, string? desc)
         {
-            _repo = repo;
-            _producer = producer;
-        }
-
-        public async Task<Transaction> CreateAsync(decimal amount, TransactionType type, string category, DateTime date, string? desc)
-        {
-            var t = new Transaction(Guid.NewGuid(), amount, type, category, date, desc);
+            var t = new Transaction(Guid.NewGuid(), amount, type, categoryId, date, desc);
             await _repo.AddAsync(t);
             // publish event
             await _producer.ProduceAsync("transaction.created", t);

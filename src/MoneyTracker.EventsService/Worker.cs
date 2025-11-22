@@ -7,12 +7,11 @@ using System;
 
 namespace MoneyTracker.EventsService
 {
-    public class Worker : BackgroundService
+    public class Worker(ILogger<Worker> logger) : BackgroundService
     {
-        private readonly ILogger<Worker> _logger;
+        private readonly ILogger<Worker> _logger = logger;
         private readonly string _topic = "transaction.created";
         private readonly string _bootstrap = "localhost:9092";
-        public Worker(ILogger<Worker> logger) => _logger = logger;
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -23,7 +22,7 @@ namespace MoneyTracker.EventsService
         {
             var config = new ConsumerConfig
             {
-                GroupId = "afinpe-events-consumer",
+                GroupId = "money-tracker-events-consumer",
                 BootstrapServers = _bootstrap,
                 AutoOffsetReset = AutoOffsetReset.Earliest
             };
