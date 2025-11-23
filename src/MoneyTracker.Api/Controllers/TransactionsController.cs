@@ -81,7 +81,7 @@ namespace MoneyTracker.Api.Controllers
         /// Returned when an unexpected server error occurs.
         /// </response>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResponse<Transaction>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResponse<TransactionDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
         [ServiceFilter(typeof(ValidationFilterAttribute<TransactionQueryDto>))]
@@ -89,11 +89,13 @@ namespace MoneyTracker.Api.Controllers
         {
             var result = await svc.ListAsync(dto);
 
-            var mapped = result.Items.Select(t => t.ToDto()).ToList();
+            var items = result.Items.Select(t => t.ToDto()).ToList();
 
-            return Ok(new PagedResponse<TransactionDto>(
-                mapped, result.PageNumber, result.PageSize, result.TotalCount
-            ));
+            Response.Headers.Append("X-Pagination-TotalCount", result.TotalCount.ToString());
+            Response.Headers.Append("X-Pagination-PageNumber", result.PageNumber.ToString());
+            Response.Headers.Append("X-Pagination-PageSize", result.PageSize.ToString());
+
+            return Ok(items);
         }
 
         /// <summary>
