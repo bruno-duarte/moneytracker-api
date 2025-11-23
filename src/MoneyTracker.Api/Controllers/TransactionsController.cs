@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MoneyTracker.Application.Services.Interfaces;
 using MoneyTracker.Application.DTOs.Transactions;
-using MoneyTracker.Application.Mappers;
 using MoneyTracker.Domain.Entities;
 using MoneyTracker.Api.Responses;
 using MoneyTracker.Api.Filters;
@@ -9,6 +8,13 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace MoneyTracker.Api.Controllers
 {
+    /// <summary>
+    /// API controller for managing transactions.
+    /// </summary>
+    /// <remarks>
+    /// Provides endpoints for creating, listing, retrieving, updating,
+    /// and deleting transactions.
+    /// </remarks>
     [ApiController]
     [Route("api/[controller]")]
     [SwaggerTag("API controller for managing transactions.")]
@@ -54,27 +60,44 @@ namespace MoneyTracker.Api.Controllers
         }
         
         /// <summary>
-        /// Returns a paginated list of transactions with optional filters.
+        /// Retrieves a paginated list of transactions with optional filters.
         /// </summary>
         /// <remarks>
-        /// This endpoint retrieves a paginated collection of <see cref="Transaction"/> records,
-        /// supporting optional filters such as type, category, and date range.  
-        /// 
-        /// Pagination parameters (<c>PageNumber</c> and <c>PageSize</c>) and filters are provided through
-        /// the query string using the <see cref="TransactionQueryDto"/>.  
-        /// 
-        /// If the query parameters fail validation, a 400 response with an <see cref="ErrorResponse"/> 
-        /// is returned.  
-        /// Unexpected server errors result in a 500 response.
+        /// This endpoint returns a paginated collection of <see cref="Transaction"/> records
+        /// based on the filtering and pagination rules defined in the
+        /// <see cref="TransactionQueryDto"/> provided via query string parameters.
+        ///
+        /// Supported filters include:
+        /// <list type="bullet">
+        ///   <item><description><c>Type</c> – filters by transaction type (e.g., Income, Expense).</description></item>
+        ///   <item><description><c>CategoryId</c> – filters transactions belonging to a specific category.</description></item>
+        ///   <item><description><c>DateFrom</c> and <c>DateTo</c> – filters transactions within a date range.</description></item>
+        /// </list>
+        ///
+        /// Pagination is controlled using <c>PageNumber</c> and <c>PageSize</c>.
+        ///
+        /// The response includes pagination metadata through the following HTTP headers:
+        /// <list type="bullet">
+        ///   <item><description><c>X-Pagination-TotalCount</c> – total number of matching records.</description></item>
+        ///   <item><description><c>X-Pagination-PageNumber</c> – current page returned.</description></item>
+        ///   <item><description><c>X-Pagination-PageSize</c> – number of items per page.</description></item>
+        /// </list>
+        ///
+        /// If the query parameters fail validation, a <c>400 Bad Request</c> is returned
+        /// with an <see cref="ErrorResponse"/>.  
+        /// Unexpected server errors will result in a <c>500 Internal Server Error</c>.
         /// </remarks>
         /// <param name="dto">
         /// The query parameters used for filtering and paginating the transaction list.
         /// </param>
+        /// <returns>
+        /// A paginated list of transactions along with pagination metadata in response headers.
+        /// </returns>
         /// <response code="200">
-        /// Returns a <see cref="PagedResponse{T}"/> containing the list of transactions and pagination metadata.
+        /// Returns a <see cref="PagedResponse{T}"/> (via response headers) and the page items in the body.
         /// </response>
         /// <response code="400">
-        /// Returned when the query parameters are invalid, as validated by the <see cref="ValidationFilterAttribute{T}"/>.
+        /// Returned when query parameters fail validation.
         /// </response>
         /// <response code="500">
         /// Returned when an unexpected server error occurs.

@@ -10,6 +10,8 @@ using MoneyTracker.Application.Validators.Transactions;
 using MoneyTracker.Api.Filters;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using MoneyTracker.Application.Validators.Categories;
+using MoneyTracker.Application.DTOs.Categories;
 
 namespace MoneyTracker.Api.DependencyInjection
 {
@@ -38,12 +40,18 @@ namespace MoneyTracker.Api.DependencyInjection
             services.AddSingleton<IEventBus, KafkaEventBus>();
 
             // FluentValidation
+            services.AddValidatorsFromAssemblyContaining<CategorySaveDtoValidator>();
+            services.AddValidatorsFromAssemblyContaining<CategoryQueryDtoValidator>();
+            services.AddValidatorsFromAssemblyContaining<CategoryPatchDtoValidator>();
             services.AddValidatorsFromAssemblyContaining<TransactionSaveDtoValidator>();
             services.AddValidatorsFromAssemblyContaining<TransactionQueryDtoValidator>();
             services.AddValidatorsFromAssemblyContaining<TransactionPatchDtoValidator>();
             services.AddFluentValidationClientsideAdapters();
 
             // Filters
+            services.AddScoped<ValidationFilterAttribute<CategorySaveDto>>();
+            services.AddScoped<ValidationFilterAttribute<CategoryQueryDto>>();
+            services.AddScoped<ValidationFilterAttribute<CategoryPatchDto>>();
             services.AddScoped<ValidationFilterAttribute<TransactionSaveDto>>();
             services.AddScoped<ValidationFilterAttribute<TransactionQueryDto>>();
             services.AddScoped<ValidationFilterAttribute<TransactionPatchDto>>();

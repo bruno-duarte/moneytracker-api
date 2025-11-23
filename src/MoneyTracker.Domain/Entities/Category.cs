@@ -22,5 +22,11 @@ namespace MoneyTracker.Domain.Entities
       if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Name is required", nameof(name));
       Name = name;
     }
+
+    public void Patch(string? name)
+    {
+        if (name != null)
+            Name = name;
+    }
   }
 }
