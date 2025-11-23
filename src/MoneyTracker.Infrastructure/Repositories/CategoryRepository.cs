@@ -1,35 +1,14 @@
 using MoneyTracker.Domain.Entities;
-using MoneyTracker.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using MoneyTracker.Domain.Interfaces.Repositories;
 
 namespace MoneyTracker.Infrastructure.Repositories
 {
-    public class CategoryRepository(MoneyTrackerDbContext db) : ICategoryRepository
+    public class CategoryRepository(MoneyTrackerDbContext db) : BaseRepository<Category>(db), ICategoryRepository
     {
-        private readonly MoneyTrackerDbContext _db = db;
-
-        public async Task AddAsync(Category category)
+        public async Task<Category?> GetByNameAsync(string name)
         {
-            _db.Categories.Add(category);
-            await _db.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(Guid id)
-        {
-            var e = await _db.Categories.FindAsync(id);
-            if (e != null) { _db.Categories.Remove(e); await _db.SaveChangesAsync(); }
-        }
-
-        public async Task<Category?> GetByIdAsync(Guid id) => await _db.Categories.FindAsync(id);
-        public async Task<IEnumerable<Category>> ListAsync() => await _db.Categories.ToListAsync();
-
-        public async Task UpdateAsync(Category category)
-        {
-            _db.Categories.Update(category);
-            await _db.SaveChangesAsync();
+            var list = await FindAsync(c => c.Name == name);
+            return list.FirstOrDefault();
         }
     }
 }

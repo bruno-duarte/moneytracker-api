@@ -1,7 +1,7 @@
 using MoneyTracker.Domain.Entities;
 using MoneyTracker.Domain.Common;
 
-namespace MoneyTracker.Domain.Interfaces
+namespace MoneyTracker.Domain.Interfaces.Repositories
 {
     public interface ITransactionRepository
     {

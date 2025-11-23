@@ -1,6 +1,6 @@
 using MoneyTracker.Domain.Entities;
 using MoneyTracker.Domain.Enums;
-using MoneyTracker.Domain.Interfaces;
+using MoneyTracker.Domain.Interfaces.Repositories;
 using MoneyTracker.Domain.Common;
 using MoneyTracker.Infrastructure.Kafka;
 using MoneyTracker.Application.Services.Interfaces;

@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using MoneyTracker.Domain.Entities;
-using MoneyTracker.Domain.Interfaces;
+using MoneyTracker.Domain.Interfaces.Repositories;
 using MoneyTracker.Application.Services.Interfaces;
 
 namespace MoneyTracker.Application.Services

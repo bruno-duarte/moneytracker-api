@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using MoneyTracker.Domain.Interfaces;
+using MoneyTracker.Domain.Interfaces.Repositories;
 using MoneyTracker.Infrastructure;
 using MoneyTracker.Infrastructure.Kafka;
 using MoneyTracker.Infrastructure.Repositories;
@@ -25,8 +25,9 @@ namespace MoneyTracker.Api.DependencyInjection
             );
 
             // Repositories
-            services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
 
             // Application services
             services.AddScoped<ITransactionService, TransactionService>();

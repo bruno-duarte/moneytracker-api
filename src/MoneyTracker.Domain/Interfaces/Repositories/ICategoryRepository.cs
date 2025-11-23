@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using MoneyTracker.Domain.Entities;
 
-namespace MoneyTracker.Domain.Interfaces
+namespace MoneyTracker.Domain.Interfaces.Repositories
 {
     public interface ICategoryRepository
     {
