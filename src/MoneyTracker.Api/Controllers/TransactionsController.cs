@@ -131,22 +131,25 @@ namespace MoneyTracker.Api.Controllers
         /// Updates an existing transaction by replacing all of its data.
         /// </summary>
         /// <remarks>
-        /// This operation follows the REST <c>PUT</c> semantics, meaning that the entire
+        /// This operation follows REST <c>PUT</c> semantics, meaning that the entire
         /// transaction resource is replaced with the data provided in the request body.
-        /// All fields in <paramref name="dto"/> must be supplied, as partial updates 
+        /// All fields in <paramref name="dto"/> must be supplied, as partial updates
         /// are not supported through this endpoint (use <c>PATCH</c> for partial updates).
         ///
-        /// If the specified transaction does not exist, a <c>404 Not Found</c> is returned.
+        /// If the specified transaction does not exist, a <c>404 Not Found</c> response is returned.
+        /// If validation fails, a <c>400 Bad Request</c> response is returned.
+        /// On success, the API returns <c>200 OK</c> along with the updated transaction data.
         /// Any unexpected errors will result in a <c>500 Internal Server Error</c>.
         /// </remarks>
         /// <param name="id">The unique GUID identifier of the transaction to update.</param>
         /// <param name="dto">The full set of transaction fields used to replace the existing resource.</param>
         /// <returns>
-        /// <c>NoContent</c> when the update succeeds,
-        /// <c>NotFound</c> if the transaction ID does not exist, or
-        /// <c>InternalServerError</c> in case of unhandled exceptions.
+        /// <c>Ok</c> with the updated transaction when the update succeeds,  
+        /// <c>NotFound</c> if the transaction ID does not exist, or  
+        /// <c>BadRequest</c> for validation issues.
         /// </returns>
         [HttpPut("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TransactionDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
@@ -161,24 +164,25 @@ namespace MoneyTracker.Api.Controllers
         /// Partially updates an existing transaction.
         /// </summary>
         /// <remarks>
-        /// This operation follows the REST <c>PATCH</c> semantics, applying only the
+        /// This operation follows REST <c>PATCH</c> semantics, applying only the
         /// fields provided in <paramref name="dto"/> to the existing resource.
-        /// 
-        /// Fields omitted from the request will remain unchanged.
-        /// 
-        /// If the transaction does not exist, a <c>404 Not Found</c> is returned.
-        /// Validation errors will produce a <c>400 Bad Request</c>, and unexpected
-        /// errors will result in a <c>500 Internal Server Error</c>.
+        /// Fields omitted from the request body will remain unchanged.
+        ///
+        /// If the specified transaction does not exist, a <c>404 Not Found</c> response is returned.
+        /// If validation fails, a <c>400 Bad Request</c> response is returned.
+        /// On success, the API returns <c>200 OK</c> along with the updated transaction data.
+        /// Any unexpected errors will result in a <c>500 Internal Server Error</c>.
         /// </remarks>
         /// <param name="id">The unique GUID identifier of the transaction to update.</param>
         /// <param name="dto">The set of fields to partially update on the resource.</param>
         /// <returns>
-        /// <c>NoContent</c> when the partial update succeeds,
-        /// <c>NotFound</c> if the transaction is not found,
-        /// <c>BadRequest</c> for validation issues, or
+        /// <c>Ok</c> with the updated transaction when the partial update succeeds,  
+        /// <c>NotFound</c> if the transaction is not found,  
+        /// <c>BadRequest</c> for validation issues, or  
         /// <c>InternalServerError</c> for unexpected exceptions.
         /// </returns>
         [HttpPatch("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TransactionDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponse))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
