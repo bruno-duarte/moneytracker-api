@@ -27,14 +27,16 @@ namespace MoneyTracker.Infrastructure.Repositories
             await _db.SaveChangesAsync();
         }
 
-        public virtual async Task DeleteAsync(Guid id)
+        public virtual async Task<bool> DeleteAsync(Guid id)
         {
             var entity = await _set.FindAsync(id);
             if (entity != null)
             {
                 _set.Remove(entity);
                 await _db.SaveChangesAsync();
+                return true;
             }
+            return false;
         }
 
         public virtual async Task<T?> GetByIdAsync(Guid id)

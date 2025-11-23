@@ -19,10 +19,6 @@ namespace MoneyTracker.Api.Controllers
         IValidator<TransactionQueryDto> queryValidator
     ) : ControllerBase
     {
-        private readonly ITransactionService _svc = svc;
-        private readonly IValidator<TransactionSaveDto> _createValidator = createValidator;
-        private readonly IValidator<TransactionQueryDto> _queryValidator = queryValidator;
-
         /// <summary>
         /// Creates a new transaction.
         /// </summary>
@@ -58,7 +54,7 @@ namespace MoneyTracker.Api.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute<TransactionSaveDto>))]
         public async Task<IActionResult> Create(TransactionSaveDto dto)
         {
-            var t = await _svc.CreateAsync(dto.Amount, dto.Type, dto.CategoryId, dto.Date, dto.Description);
+            var t = await svc.CreateAsync(dto.Amount, dto.Type, dto.CategoryId, dto.Date, dto.Description);
             return CreatedAtAction(nameof(GetById), new { id = t.Id }, t.ToDto());
         }
         
@@ -95,7 +91,7 @@ namespace MoneyTracker.Api.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute<TransactionQueryDto>))]
         public async Task<IActionResult> List([FromQuery] TransactionQueryDto dto)
         {
-            var result = await _svc.ListAsync(dto);
+            var result = await svc.ListAsync(dto);
 
             var mapped = result.Items.Select(t => t.ToDto()).ToList();
 
@@ -130,7 +126,7 @@ namespace MoneyTracker.Api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var t = await _svc.GetByIdAsync(id);
+            var t = await svc.GetByIdAsync(id);
             if (t == null) return NotFound();
             return Ok(t.ToDto());
         }
@@ -161,7 +157,7 @@ namespace MoneyTracker.Api.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute<TransactionSaveDto>))]
         public async Task<IActionResult> Update(Guid id, [FromBody] TransactionSaveDto dto)
         {
-            var updated = await _svc.UpdateAsync(id, dto);
+            var updated = await svc.UpdateAsync(id, dto);
             return Ok(updated.ToDto());
         }
 
@@ -193,7 +189,7 @@ namespace MoneyTracker.Api.Controllers
         [ServiceFilter(typeof(ValidationFilterAttribute<TransactionPatchDto>))]
         public async Task<IActionResult> Patch(Guid id, [FromBody] TransactionPatchDto dto)
         {
-            var updated = await _svc.PatchAsync(id, dto);
+            var updated = await svc.PatchAsync(id, dto);
             return Ok(updated.ToDto());
         }
 
@@ -223,11 +219,9 @@ namespace MoneyTracker.Api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var exists = await _svc.GetByIdAsync(id);
-            if (exists == null)
+            if (!await svc.DeleteAsync(id))
                 return NotFound();
 
-            await _svc.DeleteAsync(id);
             return NoContent();
         }
     }

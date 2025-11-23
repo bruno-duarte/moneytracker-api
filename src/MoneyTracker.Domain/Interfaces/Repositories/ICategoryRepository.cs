@@ -6,7 +6,7 @@ namespace MoneyTracker.Domain.Interfaces.Repositories
     {
         Task AddAsync(Category category);
         Task UpdateAsync(Category category);
-        Task DeleteAsync(Guid id);
+        Task<bool> DeleteAsync(Guid id);
         Task<Category?> GetByIdAsync(Guid id);
         Task<IEnumerable<Category>> ListAsync();
     }

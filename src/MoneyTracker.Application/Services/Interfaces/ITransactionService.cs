@@ -10,7 +10,7 @@ namespace MoneyTracker.Application.Services.Interfaces
     Task<Transaction> CreateAsync(decimal amount, TransactionType type, Guid categoryId, DateTime date, string? desc);
     Task<Transaction> UpdateAsync(Guid id, TransactionSaveDto dto);
     Task<Transaction> PatchAsync(Guid id, TransactionPatchDto dto);
-    Task DeleteAsync(Guid id);
+    Task<bool> DeleteAsync(Guid id);
     Task<Transaction?> GetByIdAsync(Guid id);
     Task<PagedResult<Transaction>> ListAsync(TransactionQueryDto dto);
   }

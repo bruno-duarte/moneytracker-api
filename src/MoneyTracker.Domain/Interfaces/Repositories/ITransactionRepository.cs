@@ -7,7 +7,7 @@ namespace MoneyTracker.Domain.Interfaces.Repositories
     {
         Task AddAsync(Transaction transaction);
         Task UpdateAsync(Transaction transaction);
-        Task DeleteAsync(Guid id);
+        Task<bool> DeleteAsync(Guid id);
         Task<Transaction?> GetByIdAsync(Guid id);
         Task<PagedResult<Transaction>> ListAsync(ISpecification<Transaction> spec, int pageNumber, int pageSize);
     }

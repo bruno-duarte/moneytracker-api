@@ -34,7 +34,7 @@ namespace MoneyTracker.Application.Services
             return t;
         }
 
-        public async Task DeleteAsync(Guid id) => await _repo.DeleteAsync(id);
+        public async Task<bool> DeleteAsync(Guid id) => await _repo.DeleteAsync(id);
 
         public async Task<Transaction?> GetByIdAsync(Guid id) => await _repo.GetByIdAsync(id);
 
