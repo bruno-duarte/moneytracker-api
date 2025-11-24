@@ -74,9 +74,9 @@ namespace MoneyTracker.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CategoryDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
-        public async Task<IActionResult> List([FromQuery] CategoryQueryDto dto)
+        public async Task<IActionResult> List([FromQuery] CategoryQueryDto query)
         {
-            var result = await svc.ListAsync(dto);
+            var result = await svc.ListAsync(query);
 
             var items = result.Items.ToList();
 

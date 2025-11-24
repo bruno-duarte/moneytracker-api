@@ -1,9 +1,4 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
-using MoneyTracker.Infrastructure;
-using MoneyTracker.Infrastructure.Repositories;
-using MoneyTracker.Application.Services;
-using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using MoneyTracker.Api.DependencyInjection;
 
@@ -20,13 +15,41 @@ builder.Services
             Newtonsoft.Json.ReferenceLoopHandling.Ignore;
     });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c => {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "MoneyTracker API", Version = "v1" });
-    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
-    c.IncludeXmlComments(xmlPath);
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "MoneyTracker API",
+        Version = "v1",
+        Description = "API responsible for managing financial transactions, categories and reporting functionalities.",
+        Contact = new OpenApiContact
+        {
+            Name = "Bruno Duarte",
+            Email = "fbrunoduarte@outlook.com"
+        },
+        License = new OpenApiLicense
+        {
+            Name = "MIT License",
+            Url = new Uri("https://opensource.org/licenses/MIT")
+        }
+    });
+
+    var xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "*.xml", SearchOption.TopDirectoryOnly);
+    foreach (var xml in xmlFiles)
+    {
+        c.IncludeXmlComments(xml, includeControllerXmlComments: true);
+    }
+
     c.EnableAnnotations();
+
+    // Remove ProblemDetails
+    c.MapType<ProblemDetails>(() => new OpenApiSchema { });
 });
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
 
 builder.Services.AddMoneyTrackerDependencies(builder.Configuration);
 

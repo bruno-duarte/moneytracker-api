@@ -103,7 +103,7 @@ namespace MoneyTracker.Api.Controllers
         /// Returned when an unexpected server error occurs.
         /// </response>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResponse<TransactionDto>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TransactionDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorResponse))]
         [ServiceFilter(typeof(ValidationFilterAttribute<TransactionQueryDto>))]
