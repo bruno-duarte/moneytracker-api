@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using MoneyTracker.Api.DependencyInjection;
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,25 +17,42 @@ builder.Services
         options.SerializerSettings.ReferenceLoopHandling =
             Newtonsoft.Json.ReferenceLoopHandling.Ignore;
     });
+var apiVersioning = builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+});
+apiVersioning.AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo
+    var provider = builder.Services.BuildServiceProvider()
+        .GetRequiredService<IApiVersionDescriptionProvider>();
+
+    foreach (var desc in provider.ApiVersionDescriptions)
     {
-        Title = "MoneyTracker API",
-        Version = "v1",
-        Description = "API responsible for managing financial transactions, categories and reporting functionalities.",
-        Contact = new OpenApiContact
+        c.SwaggerDoc(desc.GroupName, new OpenApiInfo
         {
-            Name = "Bruno Duarte",
-            Email = "fbrunoduarte@outlook.com"
-        },
-        License = new OpenApiLicense
-        {
-            Name = "MIT License",
-            Url = new Uri("https://opensource.org/licenses/MIT")
-        }
-    });
+            Title = $"MoneyTracker API",
+            Version = desc.GroupName,
+            Description = "API responsible for managing financial transactions, categories and reporting functionalities.",
+            Contact = new OpenApiContact
+            {
+                Name = "Bruno Duarte",
+                Email = "fbrunoduarte@outlook.com"
+            },
+            License = new OpenApiLicense
+            {
+                Name = "MIT License",
+                Url = new Uri("https://opensource.org/licenses/MIT")
+            }
+        });
+    }
 
     var xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "*.xml", SearchOption.TopDirectoryOnly);
     foreach (var xml in xmlFiles)
@@ -49,7 +69,11 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
 });
-
+builder.Services.AddRouting(options =>
+{
+    options.LowercaseUrls = true;
+    options.LowercaseQueryStrings = true;
+});
 
 builder.Services.AddMoneyTrackerDependencies(builder.Configuration);
 
@@ -58,10 +82,19 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
+    var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+
+    app.UseSwaggerUI(options =>
+    {
+        foreach (var desc in provider.ApiVersionDescriptions)
+        {
+            options.SwaggerEndpoint($"/swagger/{desc.GroupName}/swagger.json", desc.GroupName.ToUpperInvariant());
+            options.RoutePrefix = string.Empty;
+        }
+    });
 }
 
 app.UseSwagger();
-app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json","MoneyTracker API v1"));
 app.UseRouting();
 app.UseAuthorization();
 app.MapControllers();

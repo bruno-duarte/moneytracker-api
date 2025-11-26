@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using MoneyTracker.Application.Services.Interfaces;
 using MoneyTracker.Application.DTOs.Categories;
@@ -15,7 +16,8 @@ namespace MoneyTracker.Api.Controllers
     /// and deleting categories.
     /// </remarks>
     [ApiController]
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [SwaggerTag("API controller for managing categories used in transactions.")]
     public class CategoriesController(ICategoryService svc) : ControllerBase
     {

@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using MoneyTracker.Application.Services.Interfaces;
 using MoneyTracker.Application.DTOs.Transactions;
@@ -16,7 +17,8 @@ namespace MoneyTracker.Api.Controllers
     /// and deleting transactions.
     /// </remarks>
     [ApiController]
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [SwaggerTag("API controller for managing transactions.")]
     public class TransactionsController(ITransactionService svc) : ControllerBase
     {
