@@ -2,13 +2,13 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Run EventsService",
+      "name": "Run Transactions Worker",
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/src/MoneyTracker.EventsService/bin/Debug/net8.0/MoneyTracker.EventsService.dll",
+      "program": "${workspaceFolder}/src/MoneyTracker.Worker.Transactions/bin/Debug/net8.0/MoneyTracker.Worker.Transactions.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/src/MoneyTracker.EventsService",
+      "cwd": "${workspaceFolder}/src/MoneyTracker.Worker.Transactions",
       "stopAtEntry": false,
       "console": "integratedTerminal"
     },

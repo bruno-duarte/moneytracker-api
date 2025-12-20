@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MoneyTracker.Domain\MoneyTracker.Domain.csproj" />
     <ProjectReference Include="..\MoneyTracker.Infrastructure\MoneyTracker.Infrastructure.csproj" />
+    <ProjectReference Include="..\MoneyTracker.Messaging.Abstractions\MoneyTracker.Messaging.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

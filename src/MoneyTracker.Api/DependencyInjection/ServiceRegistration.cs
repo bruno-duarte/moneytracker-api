@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MoneyTracker.Domain.Interfaces.Repositories;
 using MoneyTracker.Infrastructure;
-using MoneyTracker.Infrastructure.Kafka;
 using MoneyTracker.Infrastructure.Repositories;
 using MoneyTracker.Application.Services.Interfaces;
 using MoneyTracker.Application.Services;
@@ -12,6 +11,10 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using MoneyTracker.Application.Validators.Categories;
 using MoneyTracker.Application.DTOs.Categories;
+using MoneyTracker.Messaging.Kafka.Configuration;
+using MoneyTracker.Messaging.Abstractions;
+using MoneyTracker.Messaging.Kafka.Internal.Producer;
+using MoneyTracker.Messaging.Abstractions.Internal.Serialization;
 
 namespace MoneyTracker.Api.DependencyInjection
 {
@@ -36,8 +39,13 @@ namespace MoneyTracker.Api.DependencyInjection
             services.AddScoped<ICategoryService, CategoryService>();
 
             // Kafka 
-            services.AddSingleton<ProducerWrapper>();
-            services.AddSingleton<IEventBus, KafkaEventBus>();
+            services.AddSingleton<IMessageSerializer, JsonMessageSerializer>();
+            services.Configure<KafkaConnectionOptions>(
+            configuration.GetSection("Kafka:Connection"));
+
+            services.AddSingleton<IMessageProducer, KafkaProducer>();
+
+            services.AddSingleton<IMessageProducer, KafkaProducer>();
 
             // FluentValidation
             services.AddValidatorsFromAssemblyContaining<CategorySaveDtoValidator>();

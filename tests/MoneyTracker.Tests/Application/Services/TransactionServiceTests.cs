@@ -4,6 +4,9 @@ using Moq;
 using Xunit;
 using MoneyTracker.Application.Services;
 using MoneyTracker.Domain.Interfaces.Repositories;
+using MoneyTracker.Messaging.Abstractions;
+using MoneyTracker.Messaging.Abstractions.Models;
+using System.Threading;
 
 namespace MoneyTracker.Tests.Application.Services
 { 
@@ -11,16 +14,16 @@ namespace MoneyTracker.Tests.Application.Services
   {
     private readonly Mock<ITransactionRepository> _repoMock;
     private readonly Mock<ICategoryRepository> _categoryRepoMock;
+    private readonly Mock<IMessageProducer> _messageProducerMock;
     private readonly TransactionService _service;
 
     public TransactionServiceTests()
     {
       _repoMock = new Mock<ITransactionRepository>();
       _categoryRepoMock = new Mock<ICategoryRepository>();
-      
-      var fakeProducer = new FakeProducerWrapper();
+      _messageProducerMock = new Mock<IMessageProducer>();
 
-      _service = new TransactionService(_repoMock.Object, _categoryRepoMock.Object, fakeProducer);
+      _service = new TransactionService(_repoMock.Object, _categoryRepoMock.Object, _messageProducerMock.Object);
     }
 
     [Fact]
@@ -38,6 +41,8 @@ namespace MoneyTracker.Tests.Application.Services
         // Assert
         Assert.True(result);
         _repoMock.Verify(r => r.DeleteAsync(id), Times.Once);
+        _messageProducerMock.Verify(p => p.PublishAsync(It.IsAny<string>(), 
+          It.IsAny<MessageEnvelope>(), It.IsAny<CancellationToken>()), Times.Once);
     }
   }
 }

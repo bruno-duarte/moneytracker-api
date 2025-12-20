@@ -22,5 +22,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MoneyTracker.Application\MoneyTracker.Application.csproj" />
+    <ProjectReference Include="..\MoneyTracker.Messaging.Kafka\MoneyTracker.Messaging.Kafka.csproj" />
   </ItemGroup>
 </Project>

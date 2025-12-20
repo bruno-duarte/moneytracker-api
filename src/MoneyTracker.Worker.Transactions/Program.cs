@@ -1,0 +1,48 @@
+using Microsoft.EntityFrameworkCore;
+using MoneyTracker.Application.Messaging.Handlers;
+using MoneyTracker.Application.Messaging.Topics;
+using MoneyTracker.Application.Services;
+using MoneyTracker.Application.Services.Interfaces;
+using MoneyTracker.Domain.Events;
+using MoneyTracker.Domain.Interfaces.Repositories;
+using MoneyTracker.Infrastructure;
+using MoneyTracker.Infrastructure.Repositories;
+using MoneyTracker.Messaging.Kafka.Configuration;
+using MoneyTracker.Messaging.Kafka.Extensions;
+
+var builder = Host.CreateApplicationBuilder(args);
+
+// DbContext
+builder.Services.AddDbContext<MoneyTrackerDbContext>(options =>
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection"))
+);
+
+// Repositories
+builder.Services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+
+// Application
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+
+// Kafka
+builder.Services.AddKafkaMessaging(options =>
+    builder.Configuration
+        .GetSection("Kafka")
+        .Bind(options));
+
+builder.Services.AddKafkaDeadLetterPublisher();
+
+builder.Services.AddKafkaConsumer<TransactionCreatedEvent, TransactionCreatedHandler>(
+    new KafkaConsumerOptions
+    {
+        Topic = TransactionTopics.Created,
+        GroupId = "moneytracker-transactions-worker-dev5",
+        DeadLetterTopic = "transaction.created.dlq",
+        EnableAutoCommit = false
+    });
+
+var host = builder.Build();
+await host.RunAsync();
+
