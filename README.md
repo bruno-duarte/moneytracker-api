@@ -23,7 +23,6 @@ The MoneyTracker API allows clients to:
 - Manage categories
 - Register income and expense transactions
 - Enforce business rules defined in the domain
-- Generate financial reports by person and category
 - Persist data across system restarts
 - Publish domain events via Kafka
 
