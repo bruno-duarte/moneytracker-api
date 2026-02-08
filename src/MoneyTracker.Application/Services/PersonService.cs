@@ -12,7 +12,7 @@ namespace MoneyTracker.Application.Services
     {
         public async Task<PersonDto> CreateAsync(PersonSaveDto dto)
         {
-            var p = new Person(Guid.NewGuid(), dto.Name, dto.Age);
+            var p = new Person(Guid.NewGuid(), dto.Name, dto.BirthDate);
             await repo.AddAsync(p);
             return p.ToDto();
         }
@@ -36,7 +36,7 @@ namespace MoneyTracker.Application.Services
         public async Task<PersonDto> UpdateAsync(Guid id, PersonSaveDto dto)
         {
             var p = await repo.GetByIdAsync(id) ?? throw new Exception("Not found");
-            p.Update(dto.Name, dto.Age);
+            p.Update(dto.Name, dto.BirthDate);
             await repo.UpdateAsync(p);
 
             return p.ToDto();

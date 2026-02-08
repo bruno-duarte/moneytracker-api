@@ -10,6 +10,7 @@ namespace MoneyTracker.Application.Mappers
           return new CategoryQuery
           {
               Name = dto.Name,
+              Description = dto.Description,
               PageNumber = dto.PageNumber,
               PageSize = dto.PageSize
           };

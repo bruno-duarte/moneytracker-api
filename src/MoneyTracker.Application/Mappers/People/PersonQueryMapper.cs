@@ -10,7 +10,7 @@ namespace MoneyTracker.Application.Mappers.People
 			return new PersonQuery
 			{
 				Name = dto.Name,
-				Age = dto.Age
+				BirthDate = dto.BirthDate
 			};
 		}
 	}

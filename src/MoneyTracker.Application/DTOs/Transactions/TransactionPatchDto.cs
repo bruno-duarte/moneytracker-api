@@ -27,6 +27,12 @@ namespace MoneyTracker.Application.DTOs.Transactions
         public Guid? CategoryId { get; set; }
 
         /// <summary>
+        /// Updated person identifier.  
+        /// If <c>null</c>, the current person remains unchanged.
+        /// </summary>
+        public Guid? PersonId { get; set; }
+
+        /// <summary>
         /// Updated transaction date.  
         /// If <c>null</c>, the current date remains unchanged.
         /// </summary>

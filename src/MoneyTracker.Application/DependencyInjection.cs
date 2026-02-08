@@ -14,6 +14,7 @@ namespace MoneyTracker.Application
             // Services
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IPersonService, PersonService>();
 
             return services;
         }

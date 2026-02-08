@@ -9,8 +9,9 @@ namespace MoneyTracker.Application.Mappers.People
         {
             return new PersonDto
             {
+                Id = p.Id,
                 Name = p.Name,
-                Age = p.Age
+                BirthDate = p.BirthDate,
             };
         }
 	}

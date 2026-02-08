@@ -20,6 +20,12 @@ namespace MoneyTracker.Application.DTOs.Transactions
         public Guid? CategoryId { get; set; }
 
         /// <summary>
+        /// Optional person filter.  
+        /// Returns only transactions that belong to the specified person.
+        /// </summary>
+        public Guid? PersonId { get; set; }
+
+        /// <summary>
         /// Optional start date filter.  
         /// Returns transactions occurring on or after this date.
         /// </summary>

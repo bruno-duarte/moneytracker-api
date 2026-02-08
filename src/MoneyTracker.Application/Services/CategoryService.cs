@@ -14,7 +14,7 @@ namespace MoneyTracker.Application.Services
 
         public async Task<CategoryDto> CreateAsync(CategorySaveDto dto)
         {
-            var c = new Category(Guid.NewGuid(), dto.Name, dto.Type);
+            var c = new Category(Guid.NewGuid(), dto.Name, dto.Type, dto.Description);
             await _repo.AddAsync(c);
             return c.ToDto();
         }
@@ -39,7 +39,7 @@ namespace MoneyTracker.Application.Services
         public async Task<CategoryDto> UpdateAsync(Guid id, CategorySaveDto dto)
         {
             var c = await _repo.GetByIdAsync(id) ?? throw new Exception("Not found");
-            c.Update(dto.Name, dto.Type);
+            c.Update(dto.Name, dto.Type, dto.Description);
             await _repo.UpdateAsync(c);
 
             return c.ToDto();

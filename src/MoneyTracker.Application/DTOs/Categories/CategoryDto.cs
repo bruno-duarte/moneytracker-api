@@ -18,8 +18,13 @@ namespace MoneyTracker.Application.DTOs.Categories
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
+        /// Description of the category.
+        /// </summary>
+        public string Description { get; set; } = string.Empty;
+
+        /// <summary>
         /// Type of the category (Expense, Income, Both).
         /// </summary>
-        public CategoryType Type { get; set; }
+        public string Type { get; set; } = string.Empty;
     }
 }

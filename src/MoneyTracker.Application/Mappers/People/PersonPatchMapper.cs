@@ -7,7 +7,7 @@ namespace MoneyTracker.Application.Mappers.People
 	{
         public static void MapChanges(this PersonPatchDto dto, Person p)
         {
-            p.Patch(dto.Name, dto.Age);
+            p.Patch(dto.Name, dto.BirthDate);
         }
 	}
 }

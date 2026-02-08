@@ -9,7 +9,9 @@ namespace MoneyTracker.Infrastructure.Persistence.PostgreSql.EntityMappings
         public void Configure(EntityTypeBuilder<Category> b)
         {
             b.HasKey(x => x.Id);
-            b.Property(x => x.Name).IsRequired().HasMaxLength(100);
+            b.Property(x => x.Name).IsRequired().HasMaxLength(200);
+            b.Property(x => x.Type).IsRequired();
+            b.Property(x => x.Description).IsRequired().HasMaxLength(400);
 
             b.HasMany(c => c.Transactions)
                 .WithOne(t => t.Category)

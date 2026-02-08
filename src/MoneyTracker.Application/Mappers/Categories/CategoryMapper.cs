@@ -10,7 +10,9 @@ namespace MoneyTracker.Application.Mappers
         return new CategoryDto
         {
             Id = c.Id,
-            Name = c.Name
+            Name = c.Name,
+            Description = c.Description,
+            Type = c.Type.ToString()
         };
       }
   }

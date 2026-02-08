@@ -20,12 +20,17 @@ namespace MoneyTracker.Application.DTOs.Transactions
         /// <summary>
         /// Type of transaction (e.g., income or expense).
         /// </summary>
-        public TransactionType Type { get; set; }
+        public string Type { get; set; } = string.Empty;
 
         /// <summary>
         /// Identifier of the associated category.
         /// </summary>
         public Guid CategoryId { get; set; }
+
+        /// <summary>
+        /// Identifier of the associated person.
+        /// </summary>
+        public Guid PersonId { get; set; }
 
         /// <summary>
         /// Date when the transaction occurred.

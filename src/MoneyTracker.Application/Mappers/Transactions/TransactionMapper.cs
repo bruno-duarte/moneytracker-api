@@ -13,8 +13,9 @@ namespace MoneyTracker.Application.Mappers
         {
             Id = t.Id,
             Amount = Money.Create(t.Amount.Value).Value,
-            Type = t.Type,
+            Type = t.Type.ToString(),
             CategoryId = t.CategoryId,
+            PersonId = t.PersonId,
             Date = t.Date,
             Description = t.Description
         };

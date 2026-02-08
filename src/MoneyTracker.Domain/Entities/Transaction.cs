@@ -104,7 +104,11 @@ namespace MoneyTracker.Domain.Entities
 
         private static void ValidateBusinessRules(TransactionType type, Category category, Person person)
         {
-            if (person.Age < 18 && type == TransactionType.Income)
+            var age = DateTime.UtcNow.Year - person.BirthDate.Year;
+            if (person.BirthDate.DayOfYear > DateTime.UtcNow.DayOfYear)
+                age--;
+
+            if (age < 18 && type == TransactionType.Income)
                 throw new Exception("Minors cannot register income.");
 
             if (category.Type == CategoryType.Expense && type == TransactionType.Income)

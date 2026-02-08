@@ -10,8 +10,8 @@ namespace MoneyTracker.Domain.Specifications
             if (!string.IsNullOrEmpty(query.Name))
                 AddCriteria(p => p.Name.Contains(query.Name));
 
-            if (query.Age.HasValue)
-                AddCriteria(p => p.Age == query.Age.Value);
+            if (query.BirthDate.HasValue)
+                AddCriteria(p => p.BirthDate == query.BirthDate.Value);
         }
 	}
 }
