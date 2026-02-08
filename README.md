@@ -1,4 +1,4 @@
-# MoneyTracker MVP (skeleton)
+# 💰 MoneyTracker API
 
 [![.NET](https://img.shields.io/badge/.NET-8-informational?style=flat&logo=.net&logoColor=white)](https://dotnet.microsoft.com/)
 [![C#](https://img.shields.io/badge/C%23-9.0-informational?style=flat&logo=c-sharp&logoColor=white)](https://docs.microsoft.com/en-us/dotnet/csharp/)
@@ -9,58 +9,261 @@
 [![xUnit](https://img.shields.io/badge/xUnit-2.4-lightgrey?style=flat&logo=xunit&logoColor=black)](https://xunit.net/)
 [![Swagger](https://img.shields.io/badge/Swagger-OpenAPI-brightgreen?style=flat&logo=swagger&logoColor=white)](https://swagger.io/)
 
-This repository contains a skeleton **.NET 8** solution for the _Money Tracker_ MVP, demonstrating a modular architecture with **Domain-Driven Design (DDD)** layers and a simple **Kafka microservice** for event-driven processing.
+MoneyTracker is a **residential expense control system** implemented as a modern .NET 8 API, following **Clean Architecture** and **Domain-Driven Design (DDD)** principles.
+
+The project exposes RESTful endpoints for managing people, categories, transactions, and financial reports, with persistence in a relational database and asynchronous event processing using Kafka.
 
 ---
 
-## Technologies Used
+## 📌 Overview
+
+The MoneyTracker API allows clients to:
+
+- Manage people (CRUD)
+- Manage categories
+- Register income and expense transactions
+- Enforce business rules defined in the domain
+- Generate financial reports by person and category
+- Persist data across system restarts
+- Publish domain events via Kafka
+
+This backend is designed to be consumed by a React frontend application.
+
+---
+
+## 🧠 Business Rules Implemented
+
+### 👤 People
+
+- Each person has a unique identifier, name (max 200 chars), and age.
+- Deleting a person removes all related transactions (cascade rule).
+
+### 🗂️ Categories
+
+- Each category has a description (max 400 chars) and a purpose:
+  - Income
+  - Expense
+  - Both
+
+### 💰 Transactions
+
+- Transaction value must be positive.
+- Minors (under 18 years old) can only register expenses.
+- Categories must match the transaction type (purpose validation).
+
+---
+
+## 🏗️ Architecture
+
+The solution follows Clean Architecture with DDD concepts:
+
+```bash
+src/
+├── MoneyTracker.Api/            # Presentation layer (Controllers, Filters, Swagger)
+├── MoneyTracker.Application/    # Application layer (DTOs, Services, Use Cases)
+├── MoneyTracker.Domain/         # Domain layer (Entities, Value Objects, Rules, Events)
+├── MoneyTracker.Infrastructure/ # Infrastructure layer (EF Core, Repositories, Persistence)
+├── MoneyTracker.EventsService/  # Kafka producer/consumer background service
+tests/
+└── MoneyTracker.Tests/          # Unit tests
+```
+
+### Layer Responsibilities
+
+- **Domain** → Core business rules and invariants.
+- **Application** → Use cases and orchestration logic.
+- **Infrastructure** → Database, messaging, and external integrations.
+- **API** → HTTP endpoints and request/response handling.
+
+---
+
+## 🧱 Domain Model
+
+### Entities
+
+- Person
+- Category
+- Transaction
+
+### Value Objects
+
+- Money
+
+### Enums
+
+- TransactionType (Income, Expense)
+- CategoryPurpose (Income, Expense, Both)
+
+### Patterns Used
+
+- Repository Pattern
+- Specification Pattern
+- DTOs & Mappers
+- Domain Events
+- Unit of Work (via EF Core)
+
+---
+
+## 🔗 API Endpoints
+
+### 👤 People
+
+| Method | Endpoint            |
+| ------ | ------------------- |
+| POST   | /api/v1/People      |
+| GET    | /api/v1/People      |
+| GET    | /api/v1/People/{id} |
+| PUT    | /api/v1/People/{id} |
+| PATCH  | /api/v1/People/{id} |
+| DELETE | /api/v1/People/{id} |
+
+---
+
+### 🗂️ Categories
+
+| Method | Endpoint                |
+| ------ | ----------------------- |
+| POST   | /api/v1/Categories      |
+| GET    | /api/v1/Categories      |
+| GET    | /api/v1/Categories/{id} |
+| PUT    | /api/v1/Categories/{id} |
+| PATCH  | /api/v1/Categories/{id} |
+| DELETE | /api/v1/Categories/{id} |
+
+---
+
+### 💰 Transactions
+
+| Method | Endpoint                  |
+| ------ | ------------------------- |
+| POST   | /api/v1/Transactions      |
+| GET    | /api/v1/Transactions      |
+| GET    | /api/v1/Transactions/{id} |
+| PUT    | /api/v1/Transactions/{id} |
+| PATCH  | /api/v1/Transactions/{id} |
+| DELETE | /api/v1/Transactions/{id} |
+
+---
+
+### 📊 Reports
+
+| Method | Endpoint                   |
+| ------ | -------------------------- |
+| GET    | /api/v1/Reports/people     |
+| GET    | /api/v1/Reports/categories |
+
+---
+
+## 🖼️ API Documentation (Swagger)
+
+After running the API:
+
+```
+http://localhost:5000/swagger
+```
+
+---
+
+## 🛠️ Technologies Used
 
 - **.NET 8** – backend framework.
 - **C#** – programming language.
-- **Entity Framework Core (EF Core)** – ORM for PostgreSQL database access.
+- **Entity Framework Core** – ORM.
 - **PostgreSQL** – relational database.
-- **Kafka & Zookeeper** – message broker for asynchronous event handling.
-- **Docker & Docker Compose** – containerization and service orchestration.
-- **xUnit** – unit testing framework.
-- **Swagger / OpenAPI** – API documentation and testing.
-- **DDD (Domain-Driven Design)** – layered architecture (Domain, Application, Infrastructure, API).
+- **Kafka & Zookeeper** – asynchronous messaging.
+- **Docker & Docker Compose** – containerization.
+- **Swagger / OpenAPI** – API documentation.
+- **xUnit** – unit testing.
+- **DDD & Clean Architecture** – architectural approach.
 
 ---
 
-## Projects
+## ▶️ How to Run
 
-- `MoneyTracker.Api` – main API containing Domain, Application, Infrastructure, and API layers.
-- `MoneyTracker.EventsService` – background worker that produces and consumes Kafka events.
-- `MoneyTracker.Tests` – minimal unit tests.
+### 1️⃣ Requirements
+
+- .NET 8 SDK
+- Docker & Docker Compose
+- PostgreSQL (or Docker container)
+- Kafka (via Docker Compose)
 
 ---
 
-## How to run (basic)
+### 2️⃣ Start infrastructure services
 
-1. Install the .NET 8 SDK.
-2. Start services with Docker Compose:
-   ```bash
-   docker compose up -d
-   ```
-   This will start PostgreSQL, Zookeeper and Kafka.
-3. Configure connection strings in `src/MoneyTracker.Api/appsettings.Development.json`.
-4. Restore and build:
-   ```bash
-   dotnet restore
-   dotnet build
-   ```
-5. Apply EF Core migrations (from `src/MoneyTracker.Api`):
-   ```bash
-   dotnet tool install --global dotnet-ef
-   dotnet ef migrations add Initial -p src/MoneyTracker.Infrastructure -s src/MoneyTracker.Api
-   dotnet ef database update -p src/MoneyTracker.Infrastructure -s src/MoneyTracker.Api
-   ```
-6. Run the API:
-   ```bash
-   dotnet run --project src/MoneyTracker.Api
-   ```
-   Swagger UI will be available at `http://localhost:5000/swagger`.
+```bash
+docker compose up -d
+```
 
-## Notes
+This starts:
 
-- This is a starting skeleton. Implement business rules, add real migrations, and customize as needed.
+- PostgreSQL
+- Zookeeper
+- Kafka
+
+---
+
+### 3️⃣ Configure the database
+
+Update `appsettings.Development.json`:
+
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Host=localhost;Port=5432;Database=moneytracker;Username=postgres;Password=postgres"
+}
+```
+
+---
+
+### 4️⃣ Run migrations
+
+```bash
+dotnet tool install --global dotnet-ef
+
+dotnet ef migrations add CategoryDescription \
+  -p src/MoneyTracker.Infrastructure \
+  -s src/MoneyTracker.Api \
+  --context PostgreSqlDbContext
+
+dotnet ef database update \
+  -p src/MoneyTracker.Infrastructure \
+  -s src/MoneyTracker.Api \
+  --context PostgreSqlDbContext
+```
+
+---
+
+### 5️⃣ Run the API
+
+```bash
+dotnet run --project src/MoneyTracker.Api
+```
+
+---
+
+## 🧪 Testing
+
+```bash
+dotnet test
+```
+
+---
+
+## 🧠 Design Decisions
+
+- Clean Architecture ensures separation of concerns and maintainability.
+- DDD models the business domain explicitly.
+- Kafka is used to demonstrate event-driven architecture.
+- EF Core handles persistence with PostgreSQL.
+- Specification pattern avoids N+1 queries in reporting scenarios.
+
+---
+
+## 🚀 Future Improvements
+
+- Authentication & authorization (JWT)
+- Role-based access control
+- Caching (Redis)
+- CI/CD pipelines
+- Observability (logging, metrics, tracing)
+- More automated tests
